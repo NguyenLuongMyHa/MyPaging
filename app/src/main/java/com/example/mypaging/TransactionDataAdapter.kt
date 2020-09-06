@@ -33,7 +33,7 @@ class TransactionDataAdapter : PagingDataAdapter<Transaction, TransactionDataAda
     object DataDifferntiator : DiffUtil.ItemCallback<Transaction>() {
 
         override fun areItemsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
-            return oldItem.name == newItem.name
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
