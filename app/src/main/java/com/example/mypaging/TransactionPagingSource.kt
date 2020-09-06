@@ -1,22 +1,28 @@
 package com.example.mypaging
 
 import androidx.paging.PagingSource
-import java.io.IOException
+import java.lang.Exception
 
-
-private const val GITHUB_STARTING_PAGE_INDEX = 1
-
-class TransactionPagingSource (private val transactions: List<Transaction>): PagingSource<Int, Transaction>() {
+class TransactionPagingSource(val transactions : ArrayList<Transaction>) : PagingSource<Int, Transaction>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transaction> {
-        val position = params.key ?: GITHUB_STARTING_PAGE_INDEX
-        return try {
-            LoadResult.Page(
-                data = transactions,
-                prevKey = if (position == GITHUB_STARTING_PAGE_INDEX) null else position - 1,
-                nextKey = if (transactions.isEmpty()) null else position + 1
+        try {
+            val pageNumber = params.key?:0
+            val response = getListData(transactions,pageNumber)
+            val responseData = mutableListOf<Transaction>()
+            val data = response?: emptyList()
+            responseData.addAll(data)
+
+            return LoadResult.Page(
+                data = responseData,
+                prevKey = if (pageNumber == 1) 0 else pageNumber - 1,
+                nextKey = pageNumber + 1
             )
-        } catch (exception: IOException) {
-            return LoadResult.Error(exception)
         }
+        catch (e: Exception) {
+            return LoadResult.Error(e)
+        }
+    }
+    private fun getListData(transactions: ArrayList<Transaction>, page: Int) : List<Transaction> {
+        return transactions.slice(page*10 until page*10+10)
     }
 }
