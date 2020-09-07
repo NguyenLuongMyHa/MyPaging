@@ -1,9 +1,8 @@
 package com.example.mypaging
-
 import androidx.paging.PagingSource
 import java.lang.Exception
 
-class TransactionPagingSource(val transactions : ArrayList<Transaction>) : PagingSource<Int, Transaction>() {
+class TransactionPagingSource(var transactions : ArrayList<Transaction>) : PagingSource<Int, Transaction>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transaction> {
         try {
             val pageNumber = params.key?:0
@@ -14,7 +13,7 @@ class TransactionPagingSource(val transactions : ArrayList<Transaction>) : Pagin
 
             return LoadResult.Page(
                 data = responseData,
-                prevKey = if (pageNumber == 1) 0 else pageNumber - 1,
+                prevKey = null,
                 nextKey = pageNumber + 1
             )
         }
@@ -23,6 +22,12 @@ class TransactionPagingSource(val transactions : ArrayList<Transaction>) : Pagin
         }
     }
     private fun getListData(transactions: ArrayList<Transaction>, page: Int) : List<Transaction> {
-        return transactions.slice(page*10 until page*10+10)
+        return if(page>9 && page % 10 == 0 ) {
+            val newTransactions = TransactionActivity.initTransaction(page*10)
+            TransactionActivity.transactions.addAll(newTransactions)
+            newTransactions.slice(0 until 10)
+        } else {
+            transactions.slice(page*10 until page*10+10)
+        }
     }
 }
