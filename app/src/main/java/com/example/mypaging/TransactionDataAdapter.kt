@@ -8,37 +8,64 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.rec_item_transaction.view.*
+import com.example.mypaging.TransactionViewModel.UiModel
 
-class TransactionDataAdapter : PagingDataAdapter<Transaction, TransactionDataAdapter.ViewHolder>(DataDifferntiator) {
+class TransactionDataAdapter : PagingDataAdapter<UiModel, RecyclerView.ViewHolder>(UIMODEL_COMPARATOR) {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.txt_transaction_name.text = getItem(position)?.name
-        holder.itemView.txt_amount.text = getItem(position)?.amount.toString()
-        if (getItem(position)?.amount!! < 0)
-            holder.itemView.txt_amount.setTextColor(Color.RED)
-        else
-            holder.itemView.txt_amount.setTextColor(Color.GREEN)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.rec_item_transaction, parent, false)
-        )
-    }
-
-    object DataDifferntiator : DiffUtil.ItemCallback<Transaction>() {
-
-        override fun areItemsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
-            return oldItem == newItem
+    class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(transaction: Transaction) {
+            itemView.txt_transaction_name.text = transaction?.name
+            itemView.txt_amount.text = transaction?.amount.toString()
+            if (transaction?.amount!! < 0)
+                itemView.txt_amount.setTextColor(Color.RED)
+            else
+                itemView.txt_amount.setTextColor(Color.GREEN)
         }
     }
 
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val uiModel = getItem(position)
+        uiModel.let {
+            when (uiModel) {
+                is UiModel.TransactionItem -> (holder as TransactionViewHolder).bind(uiModel.transaction)
+                is UiModel.SeparatorItem -> (holder as SeparatorViewHolder).bind(uiModel.description)
+            }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == R.layout.rec_item_transaction) {
+            return TransactionViewHolder(
+                LayoutInflater
+                    .from(parent.context)
+                    .inflate(R.layout.rec_item_transaction, parent, false)
+            )
+        } else {
+            return SeparatorViewHolder(
+                LayoutInflater
+                    .from(parent.context)
+                    .inflate(R.layout.separator_view_item, parent, false)
+            )
+        }
+    }
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is UiModel.TransactionItem -> R.layout.rec_item_transaction
+            is UiModel.SeparatorItem -> R.layout.separator_view_item
+            null -> throw UnsupportedOperationException("Unknown view")
+        }
+    }
+    companion object{
+        private val UIMODEL_COMPARATOR = object : DiffUtil.ItemCallback<UiModel>() {
+            override fun areItemsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
+                return (oldItem is UiModel.TransactionItem && newItem is UiModel.TransactionItem &&
+                        oldItem.transaction.id == newItem.transaction.id) ||
+                        (oldItem is UiModel.SeparatorItem && newItem is UiModel.SeparatorItem &&
+                                oldItem.description == newItem.description)
+            }
+
+            override fun areContentsTheSame(oldItem: UiModel, newItem: UiModel): Boolean =
+                oldItem == newItem
+        }
+    }
 }

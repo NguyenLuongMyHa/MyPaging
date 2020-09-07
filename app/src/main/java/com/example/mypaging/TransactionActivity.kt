@@ -27,7 +27,7 @@ class TransactionActivity : AppCompatActivity() {
 
     private fun setupView() {
         lifecycleScope.launch {
-            viewModel.examplePagingFlow.collectLatest {
+            viewModel.newResult.collectLatest {
                 pagingAdapter.submitData(it)
             }
         }
