@@ -7,13 +7,12 @@ import com.example.android.codelabs.paging.db.TransactionDatabase
 import java.io.InvalidObjectException
 import java.lang.Exception
 
-private const val GITHUB_STARTING_PAGE_INDEX = 1
+private const val GITHUB_STARTING_PAGE_INDEX = 0
 
 @OptIn(ExperimentalPagingApi::class)
 class TransactionRemoteMediator(
         private val transactionDatabase: TransactionDatabase,
-        private val myTransactions: ArrayList<Transaction>
-) : RemoteMediator<Int, Transaction>() {
+        private val transList: ArrayList<Transaction>) : RemoteMediator<Int, Transaction>() {
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, Transaction>): MediatorResult {
 
@@ -25,9 +24,6 @@ class TransactionRemoteMediator(
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeyForFirstItem(state)
                 if (remoteKeys == null) {
-                    // The LoadType is PREPEND so some data was loaded before,
-                    // so we should have been able to get remote keys
-                    // If the remoteKeys are null, then we're an invalid state and we have a bug
                     throw InvalidObjectException("Remote key and the prevKey should not be null")
                 }
                 // If the previous key is null, then we can't request more data
@@ -48,15 +44,16 @@ class TransactionRemoteMediator(
         }
 
         try {
+            val myTransactions = getListData(transList, page!!)
             val endOfPaginationReached = myTransactions.isEmpty()
             transactionDatabase.withTransaction {
                 // clear all tables in the database
                 if (loadType == LoadType.REFRESH) {
                     transactionDatabase.remoteKeysDao().clearRemoteKeys()
-                    transactionDatabase.transDao().clearRepos()
+                    transactionDatabase.transDao().clearTrans()
                 }
-                val prevKey = if (page == GITHUB_STARTING_PAGE_INDEX) null else page - 1
-                val nextKey = if (endOfPaginationReached) null else page + 1
+                val prevKey = if (page == 0) 0 else page - 1
+                val nextKey = if (endOfPaginationReached) page else page + 1
                 val keys = myTransactions.map {
                     RemoteKeys(transId = it.id, prevKey = prevKey, nextKey = nextKey)
                 }
@@ -70,35 +67,37 @@ class TransactionRemoteMediator(
     }
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Transaction>): RemoteKeys? {
-        // Get the last page that was retrieved, that contained items.
-        // From that last page, get the last item
         return state.pages.lastOrNull() { it.data.isNotEmpty() }?.data?.lastOrNull()
-                ?.let { tran ->
-                    // Get the remote keys of the last item retrieved
-                    transactionDatabase.remoteKeysDao().remoteKeysTranId(tran.id)
-                }
+            ?.let { tran ->
+                // Get the remote keys of the last item retrieved
+                transactionDatabase.remoteKeysDao().remoteKeysTranId(tran.id)
+            }
     }
 
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Transaction>): RemoteKeys? {
-        // Get the first page that was retrieved, that contained items.
-        // From that first page, get the first item
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
-                ?.let { tran ->
-                    // Get the remote keys of the first items retrieved
-                    transactionDatabase.remoteKeysDao().remoteKeysTranId(tran.id)
-                }
+            ?.let { tran ->
+                // Get the remote keys of the first items retrieved
+                transactionDatabase.remoteKeysDao().remoteKeysTranId(tran.id)
+            }
     }
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(
-            state: PagingState<Int, Transaction>
+        state: PagingState<Int, Transaction>
     ): RemoteKeys? {
-        // The paging library is trying to load data after the anchor position
-        // Get the item closest to the anchor position
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { tranId ->
                 transactionDatabase.remoteKeysDao().remoteKeysTranId(tranId)
             }
         }
     }
-
+    private fun getListData(transactions: ArrayList<Transaction>, page: Int) : List<Transaction> {
+        return if(page>9 && page % 10 == 0 ) {
+            val newTransactions = TransactionActivity.initTransaction(page*10)
+            TransactionActivity.transactions.addAll(newTransactions)
+            newTransactions.slice(0 until 10)
+        } else {
+            transactions.slice((page)*10 until (page)*10+10)
+        }
+    }
 }

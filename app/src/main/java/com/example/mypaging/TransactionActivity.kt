@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.android.codelabs.paging.db.TransactionDatabase
 import kotlinx.android.synthetic.main.activity_transaction.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -72,16 +73,16 @@ class TransactionActivity : AppCompatActivity() {
         viewModel =
             ViewModelProvider(
                 this,
-                TransactionViewModelFactory(transactions)
+                TransactionViewModelFactory(transactions, TransactionDatabase.getInstance(this))
             )[TransactionViewModel::class.java]
     }
     companion object {
         var transactions: ArrayList<Transaction> = initTransaction(0)
 
         fun initTransaction(lastIndex: Int): ArrayList<Transaction> {
-            var transactionList = ArrayList<Transaction>()
+            val transactionList = ArrayList<Transaction>()
             for (i in lastIndex..lastIndex + 99) {
-                var transaction = Transaction(i, "category ${i+1}", randomAmount())
+                val transaction = Transaction(i, "category ${i+1}", randomAmount())
                 transactionList.add(transaction)
             }
             return transactionList

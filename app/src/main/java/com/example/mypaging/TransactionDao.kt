@@ -14,6 +14,6 @@ interface TransactionDao {
     fun getTrans(): PagingSource<Int, com.example.mypaging.Transaction>
 
     @Query("DELETE FROM trans")
-    suspend fun clearRepos()
+    suspend fun clearTrans()
 
 }

@@ -7,18 +7,11 @@ import com.example.android.codelabs.paging.db.TransactionDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class TransactionViewModel(private val database: TransactionDatabase, private val myTransactions: ArrayList<Transaction>) : ViewModel() {
-
-//    val examplePagingFlow = Pager(PagingConfig(10)) {
-//        TransactionPagingSource(transactions)
-//    }.flow.cachedIn(viewModelScope)
+class TransactionViewModel(private val database: TransactionDatabase, private var myTransactions: ArrayList<Transaction>) : ViewModel() {
     private val UiModel.TransactionItem.categoryIndex: Int
     get() = this.transaction.id / 100
 
-    fun getPagingFlow(): Flow<PagingData<Transaction>> {
-//        return Pager(
-//            config = PagingConfig(pageSize = 10, enablePlaceholders = false),pagingSourceFactory = { TransactionPagingSource(transactions)}
-//        ).flow
+    private fun getPagingFlow(): Flow<PagingData<Transaction>> {
         val pagingSourceFactory = { database.transDao().getTrans() }
         return Pager(
             config = PagingConfig(pageSize = 10, enablePlaceholders = false),
