@@ -3,10 +3,11 @@ package com.example.mypaging
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
+import com.example.android.codelabs.paging.db.TransactionDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class TransactionViewModel(var transactions: ArrayList<Transaction>) : ViewModel() {
+class TransactionViewModel(private val database: TransactionDatabase, private val myTransactions: ArrayList<Transaction>) : ViewModel() {
 
 //    val examplePagingFlow = Pager(PagingConfig(10)) {
 //        TransactionPagingSource(transactions)
@@ -15,8 +16,17 @@ class TransactionViewModel(var transactions: ArrayList<Transaction>) : ViewModel
     get() = this.transaction.id / 100
 
     fun getPagingFlow(): Flow<PagingData<Transaction>> {
+//        return Pager(
+//            config = PagingConfig(pageSize = 10, enablePlaceholders = false),pagingSourceFactory = { TransactionPagingSource(transactions)}
+//        ).flow
+        val pagingSourceFactory = { database.transDao().getTrans() }
         return Pager(
-            config = PagingConfig(pageSize = 10, enablePlaceholders = false),pagingSourceFactory = { TransactionPagingSource(transactions)}
+            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+            remoteMediator = TransactionRemoteMediator(
+                database,
+                myTransactions
+            ),
+            pagingSourceFactory = pagingSourceFactory
         ).flow
     }
 
@@ -51,6 +61,5 @@ class TransactionViewModel(var transactions: ArrayList<Transaction>) : ViewModel
     sealed class UiModel {
         data class TransactionItem(val transaction: Transaction) : UiModel()
         data class SeparatorItem(val description: String) : UiModel()
-
     }
 }

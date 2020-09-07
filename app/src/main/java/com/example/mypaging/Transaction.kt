@@ -1,3 +1,17 @@
 package com.example.mypaging
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-data class Transaction (var id: Int, var name: String, var amount: Int)
+/**
+ * Immutable model class for a Github repo that holds all the information about a repository.
+ * Objects of this type are received from the Github API, therefore all the fields are annotated
+ * with the serialized name.
+ * This class also defines the Room repos table, where the repo [id] is the primary key.
+ */
+@Entity(tableName = "trans")
+data class Transaction(
+    @PrimaryKey (autoGenerate = true)
+    var id: Int,
+    var name: String,
+    var amount: Int
+)
