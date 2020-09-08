@@ -1,8 +1,8 @@
-package com.example.android.codelabs.paging.db
+package com.example.mypaging.db
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.example.mypaging.Transaction
+import com.example.mypaging.model.Transaction
 
 @Dao
 interface TransactionDao {
@@ -11,7 +11,7 @@ interface TransactionDao {
     suspend fun insertAll(transactions: List<Transaction>)
 
     @Query("SELECT * FROM trans")
-    fun getTrans(): PagingSource<Int, com.example.mypaging.Transaction>
+    fun getTrans(): PagingSource<Int, Transaction>
 
     @Query("DELETE FROM trans")
     suspend fun clearTrans()

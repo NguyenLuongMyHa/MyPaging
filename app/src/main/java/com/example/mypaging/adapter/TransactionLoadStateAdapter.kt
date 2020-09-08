@@ -1,19 +1,18 @@
-package com.example.mypaging
+package com.example.mypaging.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mypaging.R
 import kotlinx.android.synthetic.main.transaction_load_state_footer_view_item.view.*
-import kotlin.random.Random
 
 class TransactionLoadStateAdapter(private val retry: () -> Unit) : LoadStateAdapter<TransactionLoadStateAdapter.TransactionLoadStateViewHolder>() {
     override fun onBindViewHolder(
-        holder: TransactionLoadStateAdapter.TransactionLoadStateViewHolder,
+        holder: TransactionLoadStateViewHolder,
         loadState: LoadState
     ) {
         holder.bind(loadState)
@@ -22,7 +21,7 @@ class TransactionLoadStateAdapter(private val retry: () -> Unit) : LoadStateAdap
     override fun onCreateViewHolder(
         parent: ViewGroup,
         loadState: LoadState
-    ): TransactionLoadStateAdapter.TransactionLoadStateViewHolder {
+    ): TransactionLoadStateViewHolder {
         return TransactionLoadStateViewHolder.create(parent, retry)
     }
 

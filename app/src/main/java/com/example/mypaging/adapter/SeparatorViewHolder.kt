@@ -1,4 +1,4 @@
-package com.example.mypaging
+package com.example.mypaging.adapter
 
 import android.view.LayoutInflater
 import android.view.View

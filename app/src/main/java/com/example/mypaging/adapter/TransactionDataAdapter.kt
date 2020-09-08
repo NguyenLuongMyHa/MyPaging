@@ -1,4 +1,4 @@
-package com.example.mypaging
+package com.example.mypaging.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -7,10 +7,14 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mypaging.R
 import kotlinx.android.synthetic.main.rec_item_transaction.view.*
-import com.example.mypaging.TransactionViewModel.UiModel
+import com.example.mypaging.ui.TransactionViewModel.UiModel
+import com.example.mypaging.model.Transaction
 
-class TransactionDataAdapter : PagingDataAdapter<UiModel, RecyclerView.ViewHolder>(UIMODEL_COMPARATOR) {
+class TransactionDataAdapter : PagingDataAdapter<UiModel, RecyclerView.ViewHolder>(
+    UIMODEL_COMPARATOR
+) {
 
     class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(transaction: Transaction) {

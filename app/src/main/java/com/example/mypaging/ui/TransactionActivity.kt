@@ -1,4 +1,4 @@
-package com.example.mypaging
+package com.example.mypaging.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,7 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.android.codelabs.paging.db.TransactionDatabase
+import com.example.mypaging.R
+import com.example.mypaging.adapter.TransactionDataAdapter
+import com.example.mypaging.adapter.TransactionLoadStateAdapter
+import com.example.mypaging.data.TransactionViewModelFactory
+import com.example.mypaging.db.TransactionDatabase
+import com.example.mypaging.model.Transaction
 import kotlinx.android.synthetic.main.activity_transaction.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

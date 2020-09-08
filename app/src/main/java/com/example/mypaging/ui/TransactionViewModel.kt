@@ -1,9 +1,11 @@
-package com.example.mypaging
+package com.example.mypaging.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import com.example.android.codelabs.paging.db.TransactionDatabase
+import com.example.mypaging.data.TransactionRemoteMediator
+import com.example.mypaging.db.TransactionDatabase
+import com.example.mypaging.model.Transaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
