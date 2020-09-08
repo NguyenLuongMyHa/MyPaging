@@ -1,4 +1,5 @@
 package com.example.mypaging
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -10,8 +11,7 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "trans")
 data class Transaction(
-    @PrimaryKey (autoGenerate = true)
-    var id: Int,
-    var name: String,
-    var amount: Int
+    @PrimaryKey val id: Int,
+    @ColumnInfo(name = "name") val name: String?,
+    @ColumnInfo(name = "amount") val amount: Int?
 )

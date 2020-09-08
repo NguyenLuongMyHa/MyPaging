@@ -2,6 +2,7 @@ package com.example.mypaging
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -70,6 +71,7 @@ class TransactionActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
+        Log.e("____HA", transactions.toString())
         viewModel =
             ViewModelProvider(
                 this,
