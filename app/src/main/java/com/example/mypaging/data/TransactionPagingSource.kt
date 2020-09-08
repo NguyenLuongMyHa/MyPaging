@@ -1,5 +1,7 @@
-package com.example.mypaging
+package com.example.mypaging.data
 import androidx.paging.PagingSource
+import com.example.mypaging.model.Transaction
+import com.example.mypaging.ui.TransactionActivity
 import java.lang.Exception
 
 class TransactionPagingSource(var transactions : ArrayList<Transaction>) : PagingSource<Int, Transaction>() {
@@ -24,7 +26,7 @@ class TransactionPagingSource(var transactions : ArrayList<Transaction>) : Pagin
 
     private fun getListData(transactions: ArrayList<Transaction>, page: Int) : List<Transaction> {
         return if(page>9 && page % 10 == 0 ) {
-            val newTransactions = TransactionActivity.initTransaction(page*10)
+            val newTransactions = TransactionActivity.initTransaction(page * 10)
             TransactionActivity.transactions.addAll(newTransactions)
             newTransactions.slice(0 until 10)
         } else {

@@ -1,4 +1,4 @@
-package com.example.android.codelabs.paging.db
+package com.example.mypaging.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

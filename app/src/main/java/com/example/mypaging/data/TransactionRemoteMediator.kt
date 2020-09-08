@@ -1,18 +1,20 @@
-package com.example.mypaging
+package com.example.mypaging.data
 
 import android.util.Log
 import androidx.paging.*
 import androidx.room.withTransaction
-import com.example.android.codelabs.paging.db.RemoteKeys
-import com.example.android.codelabs.paging.db.TransactionDatabase
+import com.example.mypaging.db.RemoteKeys
+import com.example.mypaging.db.TransactionDatabase
+import com.example.mypaging.model.Transaction
+import com.example.mypaging.ui.TransactionActivity
 import java.io.InvalidObjectException
 import java.lang.Exception
 
 
 @OptIn(ExperimentalPagingApi::class)
 class TransactionRemoteMediator(
-        private val transactionDatabase: TransactionDatabase,
-        private val transList: ArrayList<Transaction>) : RemoteMediator<Int, Transaction>() {
+    private val transactionDatabase: TransactionDatabase,
+    private val transList: ArrayList<Transaction>) : RemoteMediator<Int, Transaction>() {
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, Transaction>): MediatorResult {
 
@@ -94,7 +96,7 @@ class TransactionRemoteMediator(
     }
     private fun getListData(transactions: ArrayList<Transaction>, page: Int) : List<Transaction> {
         return if(page>0) {
-            val newTransactions = TransactionActivity.initTransaction((page)*100)
+            val newTransactions = TransactionActivity.initTransaction((page) * 100)
             TransactionActivity.transactions.addAll(newTransactions)
             newTransactions.slice(0 until 100)
         } else {

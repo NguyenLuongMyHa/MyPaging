@@ -1,12 +1,13 @@
-package com.example.android.codelabs.paging.db
+package com.example.mypaging.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.mypaging.model.Transaction
 
 @Database(
-        entities = [com.example.mypaging.Transaction::class, RemoteKeys::class],
+        entities = [Transaction::class, RemoteKeys::class],
         version = 1,
         exportSchema = false
 )
