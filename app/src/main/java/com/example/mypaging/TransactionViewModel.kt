@@ -14,7 +14,7 @@ class TransactionViewModel(private val database: TransactionDatabase, private va
     private fun getPagingFlow(): Flow<PagingData<Transaction>> {
         val pagingSourceFactory = { database.transDao().getTrans() }
         return Pager(
-            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+            config = PagingConfig(pageSize = 100, enablePlaceholders = false),
             remoteMediator = TransactionRemoteMediator(
                 database,
                 myTransactions

@@ -93,12 +93,12 @@ class TransactionRemoteMediator(
         }
     }
     private fun getListData(transactions: ArrayList<Transaction>, page: Int) : List<Transaction> {
-        return if(page>9 && page % 10 == 0 ) {
-            val newTransactions = TransactionActivity.initTransaction((page)*10)
+        return if(page>0) {
+            val newTransactions = TransactionActivity.initTransaction((page)*100)
             TransactionActivity.transactions.addAll(newTransactions)
-            newTransactions.slice(0 until 10)
+            newTransactions.slice(0 until 100)
         } else {
-            transactions.slice((page)*10 until (page)*10+10)
+            transactions.slice(0 until 100)
         }
     }
 }

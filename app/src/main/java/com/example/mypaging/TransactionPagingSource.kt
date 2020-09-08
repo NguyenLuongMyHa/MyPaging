@@ -21,6 +21,7 @@ class TransactionPagingSource(var transactions : ArrayList<Transaction>) : Pagin
             return LoadResult.Error(e)
         }
     }
+
     private fun getListData(transactions: ArrayList<Transaction>, page: Int) : List<Transaction> {
         return if(page>9 && page % 10 == 0 ) {
             val newTransactions = TransactionActivity.initTransaction(page*10)

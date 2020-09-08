@@ -83,7 +83,7 @@ class TransactionActivity : AppCompatActivity() {
 
         fun initTransaction(lastIndex: Int): ArrayList<Transaction> {
             val transactionList = ArrayList<Transaction>()
-            for (i in lastIndex..lastIndex + 99) {
+            for (i in lastIndex..lastIndex + 100) {
                 val transaction = Transaction(i, "category ${i+1}", randomAmount())
                 transactionList.add(transaction)
             }
